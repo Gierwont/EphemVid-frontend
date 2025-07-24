@@ -10,8 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^4.6.2",
+    "bootstrap": "^5.3.7",
+    "dotenv": "^17.2.1",
+    "fingerprintjs": "^0.5.3",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-bootstrap": "^2.10.10",
+    "react-dom": "^19.1.0",
+    "react-toastify": "^11.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",

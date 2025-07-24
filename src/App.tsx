@@ -1,35 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Container, Row, Col } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import type { Video } from './interfaces';
+import { setFingerprintCookie } from './functions';
 
 function App() {
-  const [count, setCount] = useState(0)
+	const [files, setFiles] = useState<Video[]>([]);
+	const fetchData = async () => {
+		const url = import.meta.env.VITE_BACKEND_URL + '/all';
+		try {
+			await setFingerprintCookie();
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+			const response = await fetch(url, {
+				method: 'GET',
+				cache: 'no-store',
+				credentials: 'include'
+			});
+			const result = await response.json();
+			if (!response.ok) {
+				throw new Error('Error: ' + result.message);
+			}
+			setFiles(result);
+		} catch (err) {
+			toast(err instanceof Error ? err.message : String(err));
+		}
+	};
+
+	const refresh = () => {
+		fetchData();
+		console.log('refresh');
+	};
+	useEffect(() => {
+		fetchData();
+	}, []);
+
+	return (
+		<Container className=" pt-5" fluid>
+			<ToastContainer />
+
+			<h1 className="text-center pb-5">EphemVid</h1>
+			{/* <DnD refresh={refresh} /> */}
+			<Row className="g-4 pt-5">
+				{files.length > 0
+					? files.map(file => {
+							return (
+								<Col key={file.filename} xs={12} sm={6} md={4}>
+									{/* <Video video={file} refresh={refresh} /> */}
+									<div></div>
+								</Col>
+							);
+					  })
+					: null}
+			</Row>
+		</Container>
+	);
 }
 
-export default App
+export default App;
