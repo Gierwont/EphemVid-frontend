@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import type { Video } from './interfaces';
 import { setFingerprintCookie } from './functions';
+import DnD from './dnd';
+import VideoCard from './video-card';
 
 function App() {
 	const [files, setFiles] = useState<Video[]>([]);
@@ -23,7 +25,7 @@ function App() {
 			}
 			setFiles(result);
 		} catch (err) {
-			toast(err instanceof Error ? err.message : String(err));
+			toast.error(err instanceof Error ? err.message : String(err));
 		}
 	};
 
@@ -40,13 +42,13 @@ function App() {
 			<ToastContainer />
 
 			<h1 className="text-center pb-5">EphemVid</h1>
-			{/* <DnD refresh={refresh} /> */}
+			<DnD refresh={refresh} />
 			<Row className="g-4 pt-5">
 				{files.length > 0
 					? files.map(file => {
 							return (
-								<Col key={file.filename} xs={12} sm={6} md={4}>
-									{/* <Video video={file} refresh={refresh} /> */}
+								<Col key={file.filename} xs={12} md={4} lg={3}>
+									<VideoCard video={file} refresh={refresh} />
 									<div></div>
 								</Col>
 							);
