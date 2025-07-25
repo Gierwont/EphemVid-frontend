@@ -5,12 +5,14 @@ import type { Video } from './interfaces';
 import { setFingerprintCookie } from './functions';
 import { toast } from 'react-toastify';
 import EditModal from './edit-modal';
-import icon from './assets/paperclip.svg';
+import paperclip from './assets/paperclip.svg';
+import mp4 from './assets/video.svg';
 
 interface Props {
 	video: Video;
 	refresh: () => void;
 }
+
 function secondsToTime(seconds: number) {
 	const hrs = Math.floor(seconds / 3600);
 	const mins = Math.floor((seconds % 3600) / 60);
@@ -82,12 +84,12 @@ const VideoCard = (props: Props) => {
 
 	return (
 		<>
-			<Card className="h-100 border border-secondary rounded-3 bg-dark text-white">
+			<Card className="h-100 border border-secondary rounded-3 bg-dark-custom text-white">
 				{loading ? (
 					<Spinner className="mx-auto my-5" animation="border" role="status" />
 				) : (
 					<video key={reloadTimestamp} controls className=" rounded-top" style={{ aspectRatio: '16/9' }}>
-						<source src={videoUrl} type="video/mp4" />
+						<source src={videoUrl + `?t=${reloadTimestamp}`} type="video/mp4" />
 						Your browser doesn't support video
 					</video>
 				)}
@@ -100,7 +102,7 @@ const VideoCard = (props: Props) => {
 							textOverflow: 'ellipsis'
 						}}
 					>
-						{props.video.filename.slice(0, -13)}
+						{props.video.filename.slice(0, -9)}
 					</Card.Title>
 					<hr></hr>
 					<Card.Text
@@ -122,8 +124,9 @@ const VideoCard = (props: Props) => {
 						</a>
 						<Image
 							fluid
-							src={icon}
+							src={paperclip}
 							onClick={copyToClipboard}
+							alt="paperclip"
 							style={{
 								marginLeft: '6px',
 								cursor: 'pointer',
@@ -136,11 +139,22 @@ const VideoCard = (props: Props) => {
 						/>
 					</Card.Text>
 					<ButtonGroup className="w-100">
-						<DropdownButton as={ButtonGroup} title="Download" variant="success" className="w-100" menuVariant="dark">
-							<Dropdown.Item>Video</Dropdown.Item>
+						<DropdownButton as={ButtonGroup} title="Download" variant="success" className="w-100  me-1" menuVariant="dark">
+							<Dropdown.Item>
+								Video
+								<Image
+									src={mp4}
+									alt="video icon"
+									style={{
+										marginLeft: '8px',
+										height: '30px',
+										width: '25px'
+									}}
+								/>
+							</Dropdown.Item>
 							<Dropdown.Item onClick={handleDownloadGif}>GIF</Dropdown.Item>
 						</DropdownButton>
-						<Button variant="success" className="w-100" onClick={handleOpenModal}>
+						<Button variant="success" className="w-100  me-1" onClick={handleOpenModal}>
 							Edit
 						</Button>
 						<Button variant="success" className="w-100" onClick={handleDelete}>

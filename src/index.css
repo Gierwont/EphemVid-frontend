@@ -1,0 +1,46 @@
+body {
+	background-color: rgb(13,25,34); 
+	color: #fff;
+	font-family: sans-serif;
+	margin: 0;
+	padding: 0;
+	min-height: 100vh;
+}
+
+.bg-dark-custom {
+	background-color: rgb(8,21,28); 
+}
+
+.btn-gold-dark {
+	background-color: #0a0f2c;
+	color: #d4a100;                    
+	border-color: #d4a100;   
+	border: 1px solid #ffc107;
+}
+
+
+.btn-gold-dark:hover {
+	background-color: #0a0f2c;
+	color: #ffc107;
+	border-color: #d4a100;   
+}
+
+@keyframes goldGlowPulse {
+  0%, 100% {
+    text-shadow:
+      0 0 5px rgba(212, 175, 55, 0.5),
+      0 0 10px rgba(212, 175, 55, 0.4);
+  }
+  50% {
+    text-shadow:
+      0 0 8px rgba(212, 175, 55, 0.8),
+      0 0 15px rgba(212, 175, 55, 0.7);
+  }
+}
+
+.shimmering-text {
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 2px;
+  animation: goldGlowPulse 5s ease-in-out infinite;
+}

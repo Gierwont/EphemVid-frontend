@@ -76,16 +76,16 @@ const DnD = (props: Props) => {
 	}
 	return (
 		<Container onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
-			<Card className="mx-auto rounded-3 bg-dark text-white" style={{ maxWidth: '500px', border: '3px dashed gray' }}>
+			<Card className="mx-auto rounded-3 bg-dark-custom text-white" style={{ maxWidth: '500px', border: '3px dashed #bb8c00ff' }}>
 				<Card.Body className="text-center p-4">
 					<Card.Title className="mb-3">Drag and Drop files</Card.Title>
-					<Card.Subtitle className="text-secondary pb-3">or browse manually!</Card.Subtitle>
+					<Card.Subtitle className="text-secondary pb-3">or browse manually</Card.Subtitle>
 					{isDragging ? (
-						<Image className="w-25 white" fluid src={icon} />
+						<Image alt="Drag and drop cloud" className="w-25 white" fluid src={icon} />
 					) : (
 						<div>
 							<Form.Control type="file" ref={fileInputRef} onChange={handleFileChange} accept="video/mp4" style={{ display: 'none' }} />
-							<Button variant="outline-success" onClick={handleClick}>
+							<Button className="btn btn-gold-dark" onClick={handleClick}>
 								Browse Files
 							</Button>
 						</div>
