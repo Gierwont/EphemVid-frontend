@@ -7,6 +7,11 @@ import { setFingerprintCookie } from './functions';
 interface Props {
 	refresh: () => void;
 }
+const supportedMimetypes = [
+	'video/mp4',
+	'video/quicktime', // .mov
+	'video/webm'
+];
 const DnD = (props: Props) => {
 	const [isDragging, setIsDragging] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -27,25 +32,35 @@ const DnD = (props: Props) => {
 		e.preventDefault();
 		e.stopPropagation();
 		setIsDragging(false);
-		if (e.dataTransfer.files.length !== 1) {
+		if (e.dataTransfer.files.length > 10) {
 			toast.warn('Too many files were given');
 			return;
 		}
-		const file = e.dataTransfer.files[0];
-		if (file.type !== 'video/mp4') {
-			toast.warn('Wrong file type');
-			return;
+		for (const file of e.dataTransfer.files) {
+			if (!supportedMimetypes.includes(file.type)) {
+				toast.warn('Wrong file type');
+				return;
+			}
+			uploadVideo(file);
 		}
-		uploadVideo(file);
 	};
 	const handleClick = () => {
 		fileInputRef.current?.click();
 	};
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
-		if (file) {
-			uploadVideo(file);
+		if (e.target.files) {
+			if (e.target.files.length > 10) {
+				toast.warn('Too many files were given');
+				return;
+			}
+			for (const file of e.target.files) {
+				if (!supportedMimetypes.includes(file.type)) {
+					toast.warn('Wrong file type');
+				} else {
+					uploadVideo(file);
+				}
+			}
 		}
 	};
 
@@ -84,7 +99,7 @@ const DnD = (props: Props) => {
 						<Image alt="Drag and drop cloud" className="w-25 white" fluid src={icon} />
 					) : (
 						<div>
-							<Form.Control type="file" ref={fileInputRef} onChange={handleFileChange} accept="video/mp4" style={{ display: 'none' }} />
+							<Form.Control type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept=".mp4, .mov, .mkv, .avi, .webm" style={{ display: 'none' }} />
 							<Button className="btn btn-gold-dark" onClick={handleClick}>
 								Browse Files
 							</Button>
