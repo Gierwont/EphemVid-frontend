@@ -6,7 +6,6 @@ import { setFingerprintCookie } from './functions';
 import { toast } from 'react-toastify';
 import EditModal from './edit-modal';
 import paperclip from './assets/paperclip.svg';
-import mp4 from './assets/video.svg';
 
 interface Props {
 	video: Video;
@@ -35,9 +34,8 @@ const VideoCard = (props: Props) => {
 			toast.error("Couldn't copy to clipboard");
 		}
 	};
-
-	const handleDownloadGif = async () => {
-		const url = import.meta.env.VITE_BACKEND_URL + '/download/gif/' + props.video.filename;
+	const handleDownload = async (ext: string) => {
+		const url = import.meta.env.VITE_BACKEND_URL + `/download/${ext}/` + props.video.filename;
 		try {
 			await setFingerprintCookie();
 			const response = await fetch(url, {
@@ -52,13 +50,13 @@ const VideoCard = (props: Props) => {
 
 			const link = document.createElement('a');
 			link.href = blob;
-			link.setAttribute('download', props.video.filename.replace('.mp4', '.gif'));
+			link.setAttribute('download', props.video.filename.replace(/\.[^/.]+$/, '.' + ext));
 			document.body.appendChild(link);
 			link.click();
 			link.remove();
 
 			window.URL.revokeObjectURL(url);
-			toast.success('gif downloaded successfully');
+			toast.success('Downloaded successfully');
 		} catch (err) {
 			toast(err instanceof Error ? err.message : String(err));
 		}
@@ -140,19 +138,12 @@ const VideoCard = (props: Props) => {
 					</Card.Text>
 					<ButtonGroup className="w-100">
 						<DropdownButton as={ButtonGroup} title="Download" variant="success" className="w-100  me-1" menuVariant="dark">
-							<Dropdown.Item>
-								Video
-								<Image
-									src={mp4}
-									alt="video icon"
-									style={{
-										marginLeft: '8px',
-										height: '30px',
-										width: '25px'
-									}}
-								/>
-							</Dropdown.Item>
-							<Dropdown.Item onClick={handleDownloadGif}>GIF</Dropdown.Item>
+							<Dropdown.Item onClick={() => handleDownload('mp4')}>.mp4</Dropdown.Item>
+							<Dropdown.Item onClick={() => handleDownload('mov')}>.mov</Dropdown.Item>
+							<Dropdown.Item onClick={() => handleDownload('webm')}>.webm</Dropdown.Item>
+							<Dropdown.Item onClick={() => handleDownload('avi')}>.avi</Dropdown.Item>
+							<Dropdown.Item onClick={() => handleDownload('mkv')}>.mkv</Dropdown.Item>
+							<Dropdown.Item onClick={() => handleDownload('gif')}>.gif</Dropdown.Item>
 						</DropdownButton>
 						<Button variant="success" className="w-100  me-1" onClick={handleOpenModal}>
 							Edit

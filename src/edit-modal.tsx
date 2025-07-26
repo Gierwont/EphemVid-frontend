@@ -152,7 +152,7 @@ const EditModal = (props: Props) => {
 						Crop
 					</Button>
 
-					<DropdownButton title="Download" variant={compress ? 'success' : 'outline-success'} className="w-100" as={ButtonGroup} menuVariant="dark">
+					<DropdownButton title="Compress" variant={compress ? 'success' : 'outline-success'} className="w-100" as={ButtonGroup} menuVariant="dark">
 						<Form.Switch label="Compress" onChange={() => setCompress(!compress)} checked={compress} style={{ marginLeft: '10px' }} />
 						{compress ? (
 							<div style={{ padding: '10px 20px', width: 200 }}>

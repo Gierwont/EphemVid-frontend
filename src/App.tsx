@@ -72,8 +72,8 @@ function App() {
 					About EphemVid
 				</h2>
 				<p className="text-center fs-5 mx-auto" style={{ maxWidth: '700px', lineHeight: '1.6' }}>
-					EphemVid is a simple Single Page Application for anonymously uploading <span style={{ color: '#d4af37', textDecoration: 'underline' }}>mp4</span> videos. Videos disappear automatically after
-					24 hours, ensuring privacy and temporary sharing. Each user can upload up to 10 videos at a time.
+					EphemVid is a simple Single Page Application for anonymously uploading , editing and converting <span style={{ color: '#d4af37', textDecoration: 'underline' }}>mp4 mov and webm</span>{' '}
+					videos. Videos disappear automatically after 24 hours, ensuring privacy and temporary sharing. Each user can upload up to 10 videos at a time.
 				</p>
 				<p className="text-center mt-3">
 					<a href="https://github.com/your-github-username/ephemvid" target="_blank" rel="noopener noreferrer" className="btn btn-outline-success">
