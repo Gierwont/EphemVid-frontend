@@ -36,12 +36,14 @@ const VideoCard = (props: Props) => {
 	};
 	const handleDownload = async (ext: string) => {
 		const url = import.meta.env.VITE_BACKEND_URL + `/download/${ext}/` + props.video.filename;
+		const toastId = toast.loading('Download in progress...');
 		try {
 			await setFingerprintCookie();
 			const response = await fetch(url, {
 				method: 'GET',
 				credentials: 'include'
 			});
+
 			if (!response.ok) {
 				toast.error('Something went wrong');
 			}
@@ -56,9 +58,21 @@ const VideoCard = (props: Props) => {
 			link.remove();
 
 			window.URL.revokeObjectURL(url);
-			toast.success('Downloaded successfully');
+			toast.update(toastId, {
+				render: 'Downloaded successfully',
+				type: 'success',
+				isLoading: false,
+				autoClose: 5000,
+				closeButton: true
+			});
 		} catch (err) {
-			toast(err instanceof Error ? err.message : String(err));
+			toast.update(toastId, {
+				render: err instanceof Error ? err.message : String(err),
+				type: 'error',
+				isLoading: false,
+				autoClose: 5000,
+				closeButton: true
+			});
 		}
 	};
 
@@ -154,7 +168,16 @@ const VideoCard = (props: Props) => {
 					</ButtonGroup>
 				</Card.Body>
 			</Card>
-			<EditModal show={showModal} setShow={setShowModal} video={props.video} videoUrl={videoUrl} secondsToTime={secondsToTime} setLoading={setLoading} setReloadTimestamp={setReloadTimestamp} />
+			<EditModal
+				show={showModal}
+				setShow={setShowModal}
+				video={props.video}
+				videoUrl={videoUrl}
+				secondsToTime={secondsToTime}
+				setLoading={setLoading}
+				setReloadTimestamp={setReloadTimestamp}
+				refresh={props.refresh}
+			/>
 		</>
 	);
 };

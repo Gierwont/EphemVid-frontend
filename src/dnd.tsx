@@ -99,7 +99,7 @@ const DnD = (props: Props) => {
 						<Image alt="Drag and drop cloud" className="w-25 white" fluid src={icon} />
 					) : (
 						<div>
-							<Form.Control type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept=".mp4, .mov, .mkv, .avi, .webm" style={{ display: 'none' }} />
+							<Form.Control type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept=".mp4, .mov, .webm" style={{ display: 'none' }} />
 							<Button className="btn btn-gold-dark" onClick={handleClick}>
 								Browse Files
 							</Button>

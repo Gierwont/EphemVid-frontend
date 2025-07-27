@@ -72,11 +72,39 @@ function App() {
 					About EphemVid
 				</h2>
 				<p className="text-center fs-5 mx-auto" style={{ maxWidth: '700px', lineHeight: '1.6' }}>
-					EphemVid is a simple Single Page Application for anonymously uploading , editing and converting <span style={{ color: '#d4af37', textDecoration: 'underline' }}>mp4 mov and webm</span>{' '}
-					videos. Videos disappear automatically after 24 hours, ensuring privacy and temporary sharing. Each user can upload up to 10 videos at a time.
+					EphemVid is a simple Single Page Application for anonymously uploading, editing, and converting videos. Videos disappear automatically after 24 hours, ensuring privacy and temporary sharing.
+					Each user can upload up to 10 videos at a time.
 				</p>
+				<div className="d-flex justify-content-center gap-4 flex-wrap text-center mx-auto" style={{ maxWidth: '700px' }}>
+					<div className="flex-fill">
+						<p className="fs-5">Supported upload formats:</p>
+						<ul className="list-unstyled d-inline-block text-start">
+							<li>
+								<span className="text-warning text-decoration-underline">MP4</span>
+							</li>
+							<li>
+								<span className="text-warning text-decoration-underline">MOV</span>
+							</li>
+							<li>
+								<span className="text-warning text-decoration-underline">WEBM</span>
+							</li>
+						</ul>
+					</div>
+
+					<div className="flex-fill">
+						<p className="fs-5">Available download formats:</p>
+						<ul className="list-unstyled d-inline-block text-start">
+							<li>MP4</li>
+							<li>MOV</li>
+							<li>WEBM</li>
+							<li>MKV</li>
+							<li>AVI</li>
+							<li>GIF</li>
+						</ul>
+					</div>
+				</div>
 				<p className="text-center mt-3">
-					<a href="https://github.com/your-github-username/ephemvid" target="_blank" rel="noopener noreferrer" className="btn btn-outline-success">
+					<a href="https://github.com/Gierwont/EphemVid-frontend" target="_blank" rel="noopener noreferrer" className="btn btn-outline-success">
 						<Image src={githubLogo} alt="GitHub Logo" className="align-middle me-2" />
 						View project on GitHub
 					</a>

@@ -13,6 +13,7 @@ interface Props {
 	secondsToTime: (seconds: number) => string;
 	setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 	setReloadTimestamp: React.Dispatch<React.SetStateAction<number>>;
+	refresh: () => void;
 }
 
 const sliderStyles = {
@@ -54,6 +55,7 @@ const EditModal = (props: Props) => {
 		props.setShow(false);
 		setShowSlider(false);
 		setShowCrop(false);
+		setCompress(false);
 	};
 
 	const handleEditSave = async () => {
@@ -90,6 +92,7 @@ const EditModal = (props: Props) => {
 		} finally {
 			props.setLoading(false);
 			props.setReloadTimestamp(Date.now());
+			props.refresh();
 		}
 	};
 	return (
