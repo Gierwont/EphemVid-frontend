@@ -60,7 +60,6 @@ function App() {
 							return (
 								<Col key={file.filename} xs={12} md={4} lg={3}>
 									<VideoCard video={file} refresh={refresh} />
-									<div></div>
 								</Col>
 							);
 					  })
@@ -78,7 +77,7 @@ function App() {
 				<div className="d-flex justify-content-center gap-4 flex-wrap text-center mx-auto" style={{ maxWidth: '700px' }}>
 					<div className="flex-fill">
 						<p className="fs-5">Supported upload formats:</p>
-						<ul className="list-unstyled d-inline-block text-start">
+						<ul className="d-inline-block text-start">
 							<li>
 								<span className="text-warning text-decoration-underline">MP4</span>
 							</li>
@@ -93,7 +92,7 @@ function App() {
 
 					<div className="flex-fill">
 						<p className="fs-5">Available download formats:</p>
-						<ul className="list-unstyled d-inline-block text-start">
+						<ul className="d-inline-block text-start">
 							<li>MP4</li>
 							<li>MOV</li>
 							<li>WEBM</li>

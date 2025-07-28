@@ -149,7 +149,11 @@ const VideoCard = (props: Props) => {
 							onMouseOver={e => (e.currentTarget.style.transform = 'scale(1.2)')}
 							onMouseOut={e => (e.currentTarget.style.transform = 'scale(1)')}
 						/>
+						<br></br>
 					</Card.Text>
+					<div style={{ color: '#00ff99', fontFamily: 'monospace', fontSize: '16px' }}>
+						Current size : <span style={{ fontWeight: 'bold', fontSize: '17px' }}>≈{(props.video.size / 1000000).toFixed(2)} MB</span>
+					</div>
 					<ButtonGroup className="w-100">
 						<DropdownButton as={ButtonGroup} title="Download" variant="success" className="w-100  me-1" menuVariant="dark">
 							<Dropdown.Item onClick={() => handleDownload('mp4')}>.mp4</Dropdown.Item>
