@@ -1,0 +1,8 @@
+services:
+  ephemvid-backend:
+    restart: always
+    ports:
+      - 5173:5173
+    build: .
+    environment:
+      - VITE_BACKEND_URL=http://localhost:3000
