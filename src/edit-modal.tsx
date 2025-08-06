@@ -112,8 +112,8 @@ const EditModal = (props: Props) => {
 								width: 30,
 								height: 30
 							}}
-							onDragStop={(e, d) => setCrop({ ...crop, x: d.x, y: d.y })}
-							onResizeStop={(e, direction, ref, delta, position) => {
+							onDragStop={(_e, d) => setCrop({ ...crop, x: d.x, y: d.y })}
+							onResizeStop={(_e, _direction, ref, _delta, position) => {
 								setCrop({
 									x: position.x,
 									y: position.y,
