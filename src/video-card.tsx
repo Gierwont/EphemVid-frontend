@@ -25,6 +25,7 @@ const VideoCard = (props: Props) => {
 	const videoUrl = import.meta.env.VITE_BACKEND_URL + '/file/single/' + props.video.filename;
 	const [loading, setLoading] = useState(false);
 	const [showModal, setShowModal] = useState(false);
+	const [isDownloading, setIsDownloading] = useState(false);
 
 	const copyToClipboard = async () => {
 		try {
@@ -37,6 +38,7 @@ const VideoCard = (props: Props) => {
 	const handleDownload = async (ext: string) => {
 		const url = import.meta.env.VITE_BACKEND_URL + `/download/${ext}/` + props.video.filename;
 		const toastId = toast.loading('Download in progress...');
+		setIsDownloading(true);
 		try {
 			await setFingerprintCookie();
 			const response = await fetch(url, {
@@ -45,19 +47,21 @@ const VideoCard = (props: Props) => {
 			});
 
 			if (!response.ok) {
-				toast.error('Something went wrong');
+				throw new Error('Something went wrong');
 			}
 			const result = await response.blob();
-			const blob = window.URL.createObjectURL(result);
+
+			const blobUrl = window.URL.createObjectURL(result);
 
 			const link = document.createElement('a');
-			link.href = blob;
+			link.href = blobUrl;
 			link.setAttribute('download', props.video.filename.replace(/\.[^/.]+$/, '.' + ext));
 			document.body.appendChild(link);
 			link.click();
 			link.remove();
 
-			window.URL.revokeObjectURL(url);
+			window.URL.revokeObjectURL(blobUrl);
+
 			toast.update(toastId, {
 				render: 'Downloaded successfully',
 				type: 'success',
@@ -73,6 +77,8 @@ const VideoCard = (props: Props) => {
 				autoClose: 5000,
 				closeButton: true
 			});
+		} finally {
+			setIsDownloading(false);
 		}
 	};
 
@@ -155,7 +161,7 @@ const VideoCard = (props: Props) => {
 						Current size : <span style={{ fontWeight: 'bold', fontSize: '17px' }}>≈{(props.video.size / 1000000).toFixed(2)} MB</span>
 					</div>
 					<ButtonGroup className="w-100">
-						<DropdownButton as={ButtonGroup} title="Download" variant="success" className="w-100  me-1" menuVariant="dark">
+						<DropdownButton as={ButtonGroup} title="Download" variant="success" className="w-100  me-1" menuVariant="dark" disabled={loading}>
 							<Dropdown.Item onClick={() => handleDownload('mp4')}>.mp4</Dropdown.Item>
 							<Dropdown.Item onClick={() => handleDownload('mov')}>.mov</Dropdown.Item>
 							<Dropdown.Item onClick={() => handleDownload('webm')}>.webm</Dropdown.Item>
@@ -163,10 +169,10 @@ const VideoCard = (props: Props) => {
 							<Dropdown.Item onClick={() => handleDownload('mkv')}>.mkv</Dropdown.Item>
 							<Dropdown.Item onClick={() => handleDownload('gif')}>.gif</Dropdown.Item>
 						</DropdownButton>
-						<Button variant="success" className="w-100  me-1" onClick={handleOpenModal}>
+						<Button variant="success" className="w-100  me-1" onClick={handleOpenModal} disabled={isDownloading}>
 							Edit
 						</Button>
-						<Button variant="success" className="w-100" onClick={handleDelete}>
+						<Button variant="success" className="w-100" onClick={handleDelete} disabled={loading || isDownloading}>
 							Delete
 						</Button>
 					</ButtonGroup>
