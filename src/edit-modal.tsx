@@ -32,7 +32,7 @@ const EditModal = (props: Props) => {
 	const [size, setSize] = useState<number>(Math.round((props.video.size / 1000000) * 100) / 100);
 	const [compress, setCompress] = useState<boolean>(false);
 	const [showCrop, setShowCrop] = useState<boolean>(false);
-	const [crop, setCrop] = useState({ x: 0, y: 0, w: 0, h: 0 });
+	const [crop, setCrop] = useState({ x: 0, y: 0, w: 30, h: 30 });
 	const [range, setRange] = useState<number[]>([0, props.video.duration]);
 	const [showSlider, setShowSlider] = useState<boolean>(false);
 
@@ -73,6 +73,7 @@ const EditModal = (props: Props) => {
 			options.cropY = crop.y;
 			options.cropHeight = crop.h;
 			options.cropWidth = crop.w;
+			console.log(options);
 		}
 		handleCloseModal();
 		const url = import.meta.env.VITE_BACKEND_URL + '/edit';
@@ -102,7 +103,10 @@ const EditModal = (props: Props) => {
 			</Modal.Header>
 			<Modal.Body>
 				<div style={{ position: 'relative', height: 'auto' }}>
-					<video ref={videoRef} src={props.videoUrl} style={{ width: '100%', display: 'block' }} controls />
+					<video ref={videoRef} style={{ width: '100%', display: 'block' }} controls>
+						<source src={props.videoUrl + `?t=${Date.now()}`} type="video/mp4" />
+						Your browser doesn't support video
+					</video>
 					{showCrop ? (
 						<Rnd
 							bounds="parent"

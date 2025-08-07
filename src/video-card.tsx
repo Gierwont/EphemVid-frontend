@@ -26,6 +26,7 @@ const VideoCard = (props: Props) => {
 	const [loading, setLoading] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [isDownloading, setIsDownloading] = useState(false);
+	const [isDeleting, setIsDeleting] = useState(false);
 
 	const copyToClipboard = async () => {
 		try {
@@ -83,6 +84,7 @@ const VideoCard = (props: Props) => {
 	};
 
 	const handleDelete = async () => {
+		setIsDeleting(true);
 		const url = import.meta.env.VITE_BACKEND_URL + '/delete/' + props.video.id;
 		try {
 			const response = await fetch(url, {
@@ -161,7 +163,7 @@ const VideoCard = (props: Props) => {
 						Current size : <span style={{ fontWeight: 'bold', fontSize: '17px' }}>≈{(props.video.size / 1000000).toFixed(2)} MB</span>
 					</div>
 					<ButtonGroup className="w-100">
-						<DropdownButton as={ButtonGroup} title="Download" variant="success" className="w-100  me-1" menuVariant="dark" disabled={loading}>
+						<DropdownButton as={ButtonGroup} title="Download" variant="success" className="w-100  me-1" menuVariant="dark" disabled={loading || isDeleting}>
 							<Dropdown.Item onClick={() => handleDownload('mp4')}>.mp4</Dropdown.Item>
 							<Dropdown.Item onClick={() => handleDownload('mov')}>.mov</Dropdown.Item>
 							<Dropdown.Item onClick={() => handleDownload('webm')}>.webm</Dropdown.Item>
@@ -169,10 +171,10 @@ const VideoCard = (props: Props) => {
 							<Dropdown.Item onClick={() => handleDownload('mkv')}>.mkv</Dropdown.Item>
 							<Dropdown.Item onClick={() => handleDownload('gif')}>.gif</Dropdown.Item>
 						</DropdownButton>
-						<Button variant="success" className="w-100  me-1" onClick={handleOpenModal} disabled={isDownloading}>
+						<Button variant="success" className="w-100  me-1" onClick={handleOpenModal} disabled={loading || isDownloading || isDeleting}>
 							Edit
 						</Button>
-						<Button variant="success" className="w-100" onClick={handleDelete} disabled={loading || isDownloading}>
+						<Button variant="success" className="w-100" onClick={handleDelete} disabled={loading || isDownloading || isDeleting}>
 							Delete
 						</Button>
 					</ButtonGroup>
