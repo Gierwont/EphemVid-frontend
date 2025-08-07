@@ -69,6 +69,8 @@ const DnD = (props: Props) => {
 			toast.warn('File is too big (limit:200MB)');
 			return;
 		}
+		const toastId = toast.loading('Upload in progress...');
+
 		const url = import.meta.env.VITE_BACKEND_URL + '/upload';
 		const formData = new FormData();
 		formData.append('video', file);
@@ -84,9 +86,21 @@ const DnD = (props: Props) => {
 				throw new Error(`Error: ${result.message}`);
 			}
 			props.refresh();
-			toast.success(result.message);
+			toast.update(toastId, {
+				render: result.message,
+				type: 'success',
+				isLoading: false,
+				autoClose: 5000,
+				closeButton: true
+			});
 		} catch (err) {
-			toast.error(err instanceof Error ? err.message : String(err));
+			toast.update(toastId, {
+				render: err instanceof Error ? err.message : String(err),
+				type: 'error',
+				isLoading: false,
+				autoClose: 5000,
+				closeButton: true
+			});
 		}
 	}
 	return (
