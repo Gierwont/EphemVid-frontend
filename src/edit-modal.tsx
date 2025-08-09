@@ -2,7 +2,7 @@ import { Modal, Button, ButtonGroup, DropdownButton, Form } from 'react-bootstra
 import Slider from 'rc-slider';
 import { Rnd } from 'react-rnd';
 import type { editOptions, Video } from './interfaces';
-import { useState, useRef } from 'react';
+import { useState, useRef} from 'react';
 import { toast } from 'react-toastify';
 
 interface Props {
@@ -12,7 +12,6 @@ interface Props {
 	videoUrl: string;
 	secondsToTime: (seconds: number) => string;
 	setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-	setReloadTimestamp: React.Dispatch<React.SetStateAction<number>>;
 	refresh: () => void;
 }
 
@@ -29,28 +28,38 @@ const sliderStyles = {
 };
 
 const EditModal = (props: Props) => {
-	const [size, setSize] = useState<number>(Math.round((props.video.size / 1000000) * 100) / 100);
+	const originalVideoSize = Math.round((props.video.size / 1000000) * 100) / 100
+	const [size, setSize] = useState<number>(originalVideoSize);
 	const [compress, setCompress] = useState<boolean>(false);
 	const [showCrop, setShowCrop] = useState<boolean>(false);
-	const [crop, setCrop] = useState({ x: 0, y: 0, w: 30, h: 30 });
-	const [range, setRange] = useState<number[]>([0, props.video.duration]);
+	const originalCrop = { x: 0, y: 0, w: 30, h: 30 }
+	const [crop, setCrop] = useState(originalCrop);
+	const originalRange = [0, props.video.duration]
+	const [range, setRange] = useState<number[]>(originalRange);
 	const [showSlider, setShowSlider] = useState<boolean>(false);
+	const [canCut, setCanCut] = useState<boolean>(false)
+	const [canCrop, setCanCrop] = useState<boolean>(false)
+	const [canCompress, setCanCompress] = useState<boolean>(false)
+
 
 	const videoRef = useRef<HTMLVideoElement>(null);
 
 	const handleNewSize = (value: number | number[]) => {
 		if (typeof value == 'number') {
 			setSize(value);
+			setCanCompress(compress && value != originalVideoSize)
 		}
 	};
 	const handleChange = (value: number | number[]) => {
 		if (Array.isArray(value)) {
 			setRange(value);
+			setCanCut(showSlider && (value[0] !== originalRange[0] || value[1] !== originalRange[1]))
 			if (videoRef.current) {
 				videoRef.current.currentTime = value[0];
 			}
 		}
 	};
+
 	const handleCloseModal = () => {
 		props.setShow(false);
 		setShowSlider(false);
@@ -61,20 +70,23 @@ const EditModal = (props: Props) => {
 	const handleEditSave = async () => {
 		props.setLoading(true);
 		const options: editOptions = { id: props.video.id };
-		if (showSlider) {
+		console.log()
+		if (canCut) {
 			options.startTime = range[0];
 			options.endTime = range[1];
 		}
-		if (compress) {
+
+		if (canCompress) {
 			options.compressTo = Math.round(size * 1000);
 		}
-		if (showCrop) {
+		if (canCrop) {
 			options.cropX = crop.x;
 			options.cropY = crop.y;
 			options.cropHeight = crop.h;
 			options.cropWidth = crop.w;
-			console.log(options);
 		}
+		console.log(originalRange, options);
+
 		handleCloseModal();
 		const url = import.meta.env.VITE_BACKEND_URL + '/edit';
 		try {
@@ -92,7 +104,6 @@ const EditModal = (props: Props) => {
 			toast.error(err instanceof Error ? err.message : String(err));
 		} finally {
 			props.setLoading(false);
-			props.setReloadTimestamp(Date.now());
 			props.refresh();
 		}
 	};
@@ -104,7 +115,7 @@ const EditModal = (props: Props) => {
 			<Modal.Body>
 				<div style={{ position: 'relative', height: 'auto' }}>
 					<video ref={videoRef} style={{ width: '100%', display: 'block' }} controls>
-						<source src={props.videoUrl + `?t=${Date.now()}`} type="video/mp4" />
+						<source src={props.videoUrl} type="video/mp4" />
 						Your browser doesn't support video
 					</video>
 					{showCrop ? (
@@ -118,12 +129,19 @@ const EditModal = (props: Props) => {
 							}}
 							onDragStop={(_e, d) => setCrop({ ...crop, x: d.x, y: d.y })}
 							onResizeStop={(_e, _direction, ref, _delta, position) => {
-								setCrop({
+								const newCrop = {
 									x: position.x,
 									y: position.y,
 									w: parseInt(ref.style.width),
 									h: parseInt(ref.style.height)
-								});
+								};
+								setCrop(newCrop);
+								setCanCrop(showCrop && (
+									newCrop.h !== originalCrop.h ||
+									newCrop.w !== originalCrop.w ||
+									newCrop.x !== originalCrop.x ||
+									newCrop.y !== originalCrop.y
+								));
 							}}
 							style={{ border: '2px dashed limegreen', zIndex: 10 }}
 						></Rnd>
@@ -145,6 +163,7 @@ const EditModal = (props: Props) => {
 						className="w-100"
 						onClick={() => {
 							setShowSlider(!showSlider);
+							setCanCut(false)
 						}}
 					>
 						Cut
@@ -154,13 +173,14 @@ const EditModal = (props: Props) => {
 						className="w-100"
 						onClick={() => {
 							setShowCrop(!showCrop);
+							setCanCrop(false)
 						}}
 					>
 						Crop
 					</Button>
 
 					<DropdownButton title="Compress" variant={compress ? 'success' : 'outline-success'} className="w-100" as={ButtonGroup} menuVariant="dark">
-						<Form.Switch label="Compress" onChange={() => setCompress(!compress)} checked={compress} style={{ marginLeft: '10px' }} />
+						<Form.Switch label="Compress" onChange={() => { setCanCompress(false); setCompress(!compress) }} checked={compress} style={{ marginLeft: '10px' }} />
 						{compress ? (
 							<div style={{ padding: '10px 20px', width: 200 }}>
 								<Slider styles={sliderStyles} min={0} max={Math.round((props.video.size / 1000000) * 100) / 100} step={0.01} value={size} onChange={handleNewSize} />
@@ -174,7 +194,7 @@ const EditModal = (props: Props) => {
 				<Button variant="secondary" onClick={handleCloseModal}>
 					Cancel
 				</Button>
-				<Button variant="warning" onClick={handleEditSave}>
+				<Button variant="warning" onClick={handleEditSave} disabled={!(canCompress || canCut || canCrop)}>
 					Edit
 				</Button>
 			</Modal.Footer>

@@ -85,6 +85,8 @@ const DnD = (props: Props) => {
 			if (!response.ok) {
 				throw new Error(`Error: ${result.message}`);
 			}
+			//Cloudflare needs time to cache videos
+			await new Promise(resolve => setTimeout(resolve, 1500));
 			props.refresh();
 			toast.update(toastId, {
 				render: result.message,
