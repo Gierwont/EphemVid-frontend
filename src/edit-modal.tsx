@@ -2,7 +2,7 @@ import { Modal, Button, ButtonGroup, DropdownButton, Form } from 'react-bootstra
 import Slider from 'rc-slider';
 import { Rnd } from 'react-rnd';
 import type { editOptions, Video } from './interfaces';
-import { useState, useRef} from 'react';
+import { useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 
 interface Props {
@@ -85,7 +85,6 @@ const EditModal = (props: Props) => {
 			options.cropHeight = crop.h;
 			options.cropWidth = crop.w;
 		}
-		console.log(originalRange, options);
 
 		handleCloseModal();
 		const url = import.meta.env.VITE_BACKEND_URL + '/edit';
@@ -127,21 +126,43 @@ const EditModal = (props: Props) => {
 								width: 30,
 								height: 30
 							}}
-							onDragStop={(_e, d) => setCrop({ ...crop, x: d.x, y: d.y })}
+							onDragStop={(_e, d) => {
+								const video = videoRef.current;
+								if (!video) return;
+
+								const scaleX = video.videoWidth / video.clientWidth;
+								const scaleY = video.videoHeight / video.clientHeight;
+
+								setCrop({
+									...crop,
+									x: Math.round(d.x * scaleX),
+									y: Math.round(d.y * scaleY)
+								});
+							}}
 							onResizeStop={(_e, _direction, ref, _delta, position) => {
+								const video = videoRef.current;
+								if (!video) return;
+
+								const scaleX = video.videoWidth / video.clientWidth;
+								const scaleY = video.videoHeight / video.clientHeight;
+
 								const newCrop = {
-									x: position.x,
-									y: position.y,
-									w: parseInt(ref.style.width),
-									h: parseInt(ref.style.height)
+									x: Math.round(position.x * scaleX),
+									y: Math.round(position.y * scaleY),
+									w: Math.round(parseInt(ref.style.width) * scaleX),
+									h: Math.round(parseInt(ref.style.height) * scaleY)
 								};
+
 								setCrop(newCrop);
-								setCanCrop(showCrop && (
-									newCrop.h !== originalCrop.h ||
-									newCrop.w !== originalCrop.w ||
-									newCrop.x !== originalCrop.x ||
-									newCrop.y !== originalCrop.y
-								));
+								setCanCrop(
+									showCrop &&
+									(
+										newCrop.h !== originalCrop.h ||
+										newCrop.w !== originalCrop.w ||
+										newCrop.x !== originalCrop.x ||
+										newCrop.y !== originalCrop.y
+									)
+								);
 							}}
 							style={{ border: '2px dashed limegreen', zIndex: 10 }}
 						></Rnd>
