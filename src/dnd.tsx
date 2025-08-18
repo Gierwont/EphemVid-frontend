@@ -4,6 +4,7 @@ import type { DragEvent } from 'react';
 import icon from './assets/cloud-arrow-down.svg';
 import { toast } from 'react-toastify';
 import { setFingerprintCookie } from './functions';
+import PrivacyModal from './policy-modal';
 interface Props {
 	refresh: () => void;
 }
@@ -14,6 +15,8 @@ const supportedMimetypes = [
 ];
 const DnD = (props: Props) => {
 	const [isDragging, setIsDragging] = useState(false);
+	const [showModal, setShowModal] = useState(false)
+	const isAccepted = localStorage.getItem('terms_accepted') === "true";
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
@@ -32,6 +35,8 @@ const DnD = (props: Props) => {
 		e.preventDefault();
 		e.stopPropagation();
 		setIsDragging(false);
+		if (!isAccepted) return setShowModal(true);
+
 		if (e.dataTransfer.files.length > 10) {
 			toast.warn('Too many files were given');
 			return;
@@ -65,6 +70,8 @@ const DnD = (props: Props) => {
 	};
 
 	async function uploadVideo(file: File) {
+		if (!isAccepted) return setShowModal(true);
+
 		if (file.size > 200 * 1024 * 1024) {
 			toast.warn('File is too big (limit:200MB)');
 			return;
@@ -107,6 +114,7 @@ const DnD = (props: Props) => {
 	}
 	return (
 		<Container onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
+			<PrivacyModal showModal={showModal} setShowModal={setShowModal} />
 			<Card className="mx-auto rounded-3 bg-dark-custom text-white" style={{ maxWidth: '500px', border: '3px dashed #bb8c00ff' }}>
 				<Card.Body className="text-center p-4">
 					<Card.Title className="mb-3">Drag and Drop files</Card.Title>
