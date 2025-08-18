@@ -161,39 +161,42 @@ const VideoCard = (props: Props) => {
 					<div style={{ color: '#00ff99', fontFamily: 'monospace', fontSize: '16px' }}>
 						Current size : <span style={{ fontWeight: 'bold', fontSize: '17px' }}>≈{(props.video.size / 1000000).toFixed(2)} MB</span>
 					</div>
-		<ButtonGroup className="w-100 d-flex justify-content-center align-items-center">
-  <DropdownButton 
-    as={ButtonGroup} 
-    title="Download" 
-    variant="success" 
-    className="flex-grow-1 me-1" 
-    menuVariant="dark" 
-    disabled={loading || isDeleting}
-  >
-    <Dropdown.Item onClick={() => handleDownload('mp4')}>.mp4</Dropdown.Item>
-    <Dropdown.Item onClick={() => handleDownload('mov')}>.mov</Dropdown.Item>
-    <Dropdown.Item onClick={() => handleDownload('webm')}>.webm</Dropdown.Item>
-    <Dropdown.Item onClick={() => handleDownload('avi')}>.avi</Dropdown.Item>
-    <Dropdown.Item onClick={() => handleDownload('mkv')}>.mkv</Dropdown.Item>
-    <Dropdown.Item onClick={() => handleDownload('gif')}>.gif</Dropdown.Item>
-  </DropdownButton>
-  <Button 
-    variant="success" 
-    className="flex-grow-1 me-1" 
-    onClick={handleOpenModal} 
-    disabled={loading || isDownloading || isDeleting}
-  >
-    Edit
-  </Button>
-  <Button 
-    variant="success" 
-    className="flex-grow-1" 
-    onClick={handleDelete}  
-    disabled={loading || isDownloading || isDeleting}
-  >
-    Delete
-  </Button>
-</ButtonGroup>
+
+					<ButtonGroup className="w-100" size="sm">
+						<DropdownButton
+							as={ButtonGroup}
+							title="Download"
+							variant="success"
+							menuVariant="dark"
+							className="flex-grow-1 fs-6" // trochę większy font
+							disabled={loading || isDeleting}
+						>
+							{['mp4', 'mov', 'webm', 'avi', 'mkv', 'gif'].map(format => (
+								<Dropdown.Item key={format} onClick={() => handleDownload(format)}>
+									.{format}
+								</Dropdown.Item>
+							))}
+						</DropdownButton>
+
+						<Button
+							variant="success"
+							className="fs-6"
+							onClick={handleOpenModal}
+							disabled={loading || isDownloading || isDeleting}
+						>
+							Edit
+						</Button>
+
+						<Button
+							variant="success"
+							className="fs-6"
+							onClick={handleDelete}
+							disabled={loading || isDownloading || isDeleting}
+						>
+							Delete
+						</Button>
+					</ButtonGroup>
+
 				</Card.Body>
 			</Card>
 			<EditModal
@@ -207,6 +210,7 @@ const VideoCard = (props: Props) => {
 			/>
 		</>
 	);
+
 };
 
 export default VideoCard;
