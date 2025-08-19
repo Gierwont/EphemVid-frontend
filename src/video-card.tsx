@@ -128,19 +128,20 @@ const VideoCard = (props: Props) => {
 						style={{
 							overflow: 'hidden',
 							textOverflow: 'ellipsis',
-							whiteSpace: 'nowrap'
+							whiteSpace: 'nowrap',
+							display: 'flex'
 						}}
 					>
-						<a
-							target="_blank"
+						<p
 							style={{
 								color: 'lightgreen',
-								textDecoration: 'none'
+								textDecoration: 'none',
+								cursor: 'pointer'
 							}}
-							href={videoUrl}
+							onClick={copyToClipboard}
 						>
 							{videoUrl}
-						</a>
+						</p>
 						<Image
 							fluid
 							src={paperclip}
