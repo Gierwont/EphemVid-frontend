@@ -50,6 +50,7 @@ const DnD = (props: Props) => {
 		}
 	};
 	const handleClick = () => {
+		if (!isAccepted) return setShowModal(true);
 		fileInputRef.current?.click();
 	};
 
@@ -70,7 +71,6 @@ const DnD = (props: Props) => {
 	};
 
 	async function uploadVideo(file: File) {
-		if (!isAccepted) return setShowModal(true);
 
 		if (file.size > 200 * 1024 * 1024) {
 			toast.warn('File is too big (limit:200MB)');

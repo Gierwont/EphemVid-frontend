@@ -132,7 +132,7 @@ const VideoCard = (props: Props) => {
 							display: 'flex'
 						}}
 					>
-						<p
+						<span
 							style={{
 								color: 'lightgreen',
 								textDecoration: 'none',
@@ -141,7 +141,7 @@ const VideoCard = (props: Props) => {
 							onClick={copyToClipboard}
 						>
 							{videoUrl}
-						</p>
+						</span>
 						<Image
 							fluid
 							src={paperclip}
